@@ -827,7 +827,7 @@ p {
   z-index: 1;
   display: grid;
   gap: 16px;
-  margin: 24px 0 32px;
+  margin: 24px auto 32px;
 }
 
 .search {
