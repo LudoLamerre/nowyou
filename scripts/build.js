@@ -100,7 +100,7 @@ function layout({ title, description, depth, body, active = '', scripts = [], pa
 <a class="visually-hidden" href="#main">Aller au contenu</a>
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="${rel}./" aria-label="nowYou, accueil"><img src="${rel}assets/img/logo-512.png" alt="" width="38" height="38">now<span>You</span></a>
+    <a class="brand" href="${rel}./" aria-label="nowYou, accueil"><img src="${rel}assets/img/logo-512.png" alt="" width="38" height="38"><b>now<span>You</span></b></a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
       ${nav}
@@ -414,11 +414,12 @@ function biasPage(bias, index) {
 // ─── Static pages ────────────────────────────────────────────────────────────
 
 function staticPage({ slug, title, intro, content, description }) {
+  const plainTitle = title.replace(/<[^>]+>/g, '');
   const body = `
 <section class="page-hero">
   <span class="blob" style="width:360px;height:360px;top:-160px;right:-120px;background:var(--teal-soft)"></span>
   <div class="container">
-    <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../">Accueil</a><span>›</span><span>${esc(title)}</span></nav>
+    <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../">Accueil</a><span>›</span><span>${esc(plainTitle)}</span></nav>
     <h1>${title}</h1>
     <div class="dash"></div>
     <p class="lead muted" style="max-width:40rem">${intro}</p>
@@ -426,7 +427,7 @@ function staticPage({ slug, title, intro, content, description }) {
 </section>
 <section class="container prose">${content}</section>
 `;
-  return layout({ title: title.replace(/<[^>]+>/g, ''), description, depth: 1, active: slug, body, pathname: `${slug}/` });
+  return layout({ title: plainTitle, description, depth: 1, active: slug, body, pathname: `${slug}/` });
 }
 
 const mail = `<a href="mailto:${config.contactEmail}">${config.contactEmail}</a>`;

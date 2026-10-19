@@ -327,6 +327,10 @@ p {
   height: 38px;
 }
 
+.brand b {
+  font-weight: 800;
+}
+
 .brand span {
   color: var(--teal);
 }
