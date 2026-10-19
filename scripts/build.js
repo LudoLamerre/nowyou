@@ -45,7 +45,7 @@ const catIcon = (category, rel, size) =>
 const actions = (rel) =>
   `<a class="btn btn--accent" href="${rel}#app">Découvrir l’app ${icon('arrowRight')}</a>` +
   `<a class="btn btn--outline" href="${rel}#comment">Comment ça marche</a>`;
-const availability = `<p class="availability">${icon('deviceMobile')} Disponible sur iOS et Android.</p>`;
+const availability = `<p class="availability">${icon('deviceMobile')} Disponible sur iOS.</p>`;
 
 function layout({ title, description, depth, body, active = '', scripts = [], pathname = '' }) {
   const rel = '../'.repeat(depth);
