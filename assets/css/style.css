@@ -155,6 +155,61 @@ p {
   z-index: 0;
 }
 
+.blob--teal {
+  background: var(--teal);
+}
+
+.blob--coral {
+  background: var(--coral);
+}
+
+.blob--teal-soft {
+  background: var(--teal-soft);
+}
+
+.blob--coral-soft {
+  background: var(--coral-soft);
+}
+
+.blob--peach {
+  background: var(--peach);
+}
+
+/* Phone on a rounded colored stage, bleeding out of the bottom like the app mockups */
+.stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--teal-soft);
+  aspect-ratio: 4 / 5;
+  width: min(100%, 440px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.stage img {
+  position: relative;
+  z-index: 1;
+  width: 68%;
+  margin-bottom: -10%;
+  filter: drop-shadow(0 24px 40px rgba(36, 59, 107, 0.25));
+}
+
+.illu {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 18px;
+}
+
+.cat-icon {
+  display: inline-block;
+  object-fit: contain;
+  flex: none;
+}
+
 .icon {
   width: 1em;
   height: 1em;
@@ -258,38 +313,8 @@ p {
   border-color: var(--line);
 }
 
-.btn--store {
-  background: var(--ink);
-  color: var(--white);
-  gap: 12px;
-  padding: 0 22px;
-  text-align: left;
-  line-height: 1.1;
-}
-
-.btn--store small {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  opacity: 0.8;
-}
-
-.btn--store strong {
-  display: block;
-  font-size: 1.05rem;
-}
-
-.btn--store .icon {
-  font-size: 1.7rem;
-}
-
-.btn--store[aria-disabled='true'] {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.btn--store[aria-disabled='true']:hover {
-  transform: none;
+.btn .icon {
+  font-size: 1.2rem;
 }
 
 /* ─── Header ────────────────────────────────────────────────────────────── */
@@ -323,8 +348,9 @@ p {
 }
 
 .brand img {
-  width: 38px;
-  height: 38px;
+  height: 36px;
+  width: 111px;
+  max-width: none;
 }
 
 .brand b {
@@ -447,10 +473,8 @@ p {
   justify-content: center;
 }
 
-.hero-visual img {
-  width: min(100%, 420px);
-  border-radius: 28px;
-  box-shadow: var(--shadow-float);
+.hero-visual .stage {
+  background: var(--peach);
 }
 
 .stats {
@@ -525,6 +549,11 @@ p {
   font-size: 36px;
 }
 
+.card > .illu {
+  width: 140px;
+  height: 140px;
+}
+
 .card p {
   color: var(--slate);
   margin: 0;
@@ -548,18 +577,8 @@ p {
   justify-content: center;
 }
 
-.feature-visual img {
-  width: min(100%, 380px);
-  border-radius: 28px;
-  box-shadow: var(--shadow-float);
-}
-
-.feature-visual .blob {
-  width: 320px;
-  height: 320px;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
+.feature-visual .stage {
+  width: min(100%, 400px);
 }
 
 .feature h2 {
@@ -633,11 +652,9 @@ p {
   transform: translateY(-3px);
 }
 
-.cat-card .bubble {
-  width: 56px;
-  height: 56px;
-  font-size: 30px;
-  background: rgba(255, 255, 255, 0.6);
+.cat-card .cat-icon {
+  width: 72px;
+  height: 72px;
 }
 
 .cat-card strong {
@@ -734,8 +751,15 @@ p {
 }
 
 .cta {
+  position: relative;
+  overflow: hidden;
   text-align: center;
-  padding: 40px 0 90px;
+  padding: 90px 0 110px;
+}
+
+.cta .container {
+  position: relative;
+  z-index: 1;
 }
 
 .cta .hero-actions {
@@ -862,8 +886,9 @@ p {
   transition: transform 0.15s;
 }
 
-.filter .icon {
-  font-size: 1.25rem;
+.filter .cat-icon {
+  width: 24px;
+  height: 24px;
 }
 
 .filter[aria-pressed='true'] {
@@ -933,10 +958,9 @@ p {
   gap: 10px;
 }
 
-.bias-card .bubble {
-  width: 44px;
-  height: 44px;
-  font-size: 24px;
+.bias-card .cat-icon {
+  width: 48px;
+  height: 48px;
 }
 
 .bias-card h3 {
@@ -972,11 +996,11 @@ p {
   margin: 0 auto;
 }
 
-.bias-hero .bubble {
-  width: 140px;
-  height: 140px;
-  font-size: 76px;
+.bias-hero .cat-icon {
+  width: 150px;
+  height: 150px;
   margin: 0 auto 20px;
+  display: block;
 }
 
 .bias-hero .theme {
@@ -1108,10 +1132,9 @@ p {
   color: var(--night);
 }
 
-.related a .bubble {
+.related a .cat-icon {
   width: 36px;
   height: 36px;
-  font-size: 20px;
 }
 
 .related a .icon.chev {
@@ -1220,6 +1243,10 @@ p {
 
   .hero {
     padding-top: 40px;
+  }
+
+  .stage img {
+    width: 72%;
   }
 
   .section {

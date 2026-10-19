@@ -7,6 +7,9 @@ const config = require('../site.config.json');
 const icons = require('./icons.json');
 const biases = require('../data/biases.json');
 
+// Cache-busting suffix for the stylesheet and scripts, renewed at each build
+const STAMP = Date.now().toString(36);
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const esc = (value) =>
@@ -48,18 +51,14 @@ const sorted = [...biases].sort((a, b) => {
 const featured = biases.filter((b) => b.featured).sort((a, b) => a.featuredOrder - b.featuredOrder);
 const totalQuestions = biases.reduce((sum, b) => sum + b.questions.length, 0);
 
-const bubble = (category, cls = '') =>
-  `<span class="bubble cat--${category} ${cls}">${icon(CATEGORIES[category].icon)}</span>`;
+const catIcon = (category, rel, size) =>
+  `<img class="cat-icon" src="${rel}assets/img/cat-${category}.png" alt="" width="${size}" height="${size}" loading="lazy">`;
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
-function storeButtons() {
-  const store = (url, name, iconName) =>
-    url
-      ? `<a class="btn btn--store" href="${esc(url)}" target="_blank" rel="noopener">${icon(iconName)}<span><small>Télécharger sur</small><strong>${name}</strong></span></a>`
-      : `<span class="btn btn--store" aria-disabled="true">${icon(iconName)}<span><small>Bientôt disponible sur</small><strong>${name}</strong></span></span>`;
-  return store(config.appStoreUrl, 'App Store', 'appleLogo') + store(config.playStoreUrl, 'Google Play', 'googlePlayLogo');
-}
+const actions = (rel, withHow = false) =>
+  `<a class="btn btn--accent" href="${rel}biais/">Explorer les biais ${icon('arrowRight')}</a>` +
+  (withHow ? `<a class="btn btn--outline" href="${rel}#comment">Comment ça marche</a>` : '');
 
 function layout({ title, description, depth, body, active = '', scripts = [], pathname = '' }) {
   const rel = '../'.repeat(depth);
@@ -94,17 +93,17 @@ function layout({ title, description, depth, body, active = '', scripts = [], pa
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="${rel}assets/css/style.css">
+<link rel="stylesheet" href="${rel}assets/css/style.css?v=${STAMP}">
 </head>
 <body>
 <a class="visually-hidden" href="#main">Aller au contenu</a>
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="${rel}./" aria-label="nowYou, accueil"><img src="${rel}assets/img/logo-512.png" alt="" width="38" height="38"><b>now<span>You</span></b></a>
+    <a class="brand" href="${rel}./" aria-label="nowYou, accueil"><img src="${rel}assets/img/logo-horizontal.png" alt="nowYou" width="111" height="36"></a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
       ${nav}
-      <li><a class="btn btn--accent" href="${rel}#telecharger">Télécharger</a></li>
+      <li><a class="btn btn--accent" href="${rel}biais/">Explorer les biais</a></li>
     </ul>
   </div>
 </header>
@@ -123,8 +122,8 @@ ${body}
     </ul>
   </div>
 </footer>
-<script src="${rel}assets/js/main.js" defer></script>
-${scripts.map((s) => `<script src="${rel}${s}" defer></script>`).join('\n')}
+<script src="${rel}assets/js/main.js?v=${STAMP}" defer></script>
+${scripts.map((s) => `<script src="${rel}${s}?v=${STAMP}" defer></script>`).join('\n')}
 </body>
 </html>
 `;
@@ -136,7 +135,7 @@ function landing() {
   const categoryCards = ORDER.map((id) => {
     const count = biases.filter((b) => b.category === id).length;
     return `<a class="cat-card cat--${id}" href="biais/#categorie=${id}">
-      <span class="bubble">${icon(CATEGORIES[id].icon)}</span>
+      ${catIcon(id, '', 72)}
       <strong>${CATEGORIES[id].label}</strong>
       <span>${esc(CATEGORIES[id].tagline)}</span>
       <span class="count">${count} biais</span>
@@ -149,18 +148,24 @@ function landing() {
 
   const body = `
 <section class="hero">
-  <span class="blob" style="width:420px;height:420px;top:-160px;right:-120px;background:var(--teal-soft)"></span>
-  <span class="blob" style="width:220px;height:220px;top:420px;left:-120px;background:var(--peach)"></span>
+  <span class="blob blob--teal-soft" style="width:460px;height:460px;top:-180px;right:-140px"></span>
+  <span class="blob blob--peach" style="width:240px;height:240px;top:380px;left:-130px"></span>
+  <span class="blob blob--teal" style="width:380px;height:380px;bottom:-220px;left:-160px;opacity:.9"></span>
   <div class="container">
     <div>
       <p class="hero-eyebrow"><span class="sparkles"></span> Application mobile · biais cognitifs</p>
       <h1>Des biais<br>à la <span class="accent">clarté</span>.</h1>
       <div class="dash"></div>
       <p class="lead">nowYou vous aide à identifier et comprendre les biais cognitifs pour mieux vous connaître et faire des choix plus éclairés au quotidien.</p>
-      <div class="hero-actions" id="telecharger">${storeButtons()}</div>
+      <div class="hero-actions">${actions('', true)}</div>
     </div>
     <div class="hero-visual">
-      <img src="assets/img/screen-connaitre.webp" alt="Écran d’accueil de nowYou : « Mieux se connaître »" width="853" height="1844" loading="eager">
+      <div class="stage">
+        <span class="blob blob--teal" style="width:56%;aspect-ratio:1;bottom:-18%;left:-22%"></span>
+        <span class="blob blob--coral" style="width:60%;aspect-ratio:1;bottom:-22%;right:-20%"></span>
+        <span class="blob blob--teal-soft" style="width:44%;aspect-ratio:1;top:-10%;right:-8%"></span>
+        <img src="assets/img/phone-connaitre.webp" alt="Écran d’accueil de nowYou : « Mieux se connaître »" width="640" height="1204" loading="eager">
+      </div>
     </div>
   </div>
   <div class="container">
@@ -181,17 +186,17 @@ function landing() {
     </div>
     <div class="grid-3">
       <article class="card">
-        <span class="bubble cat--emotions">${icon('userCircle')}</span>
+        <img class="illu" src="assets/img/femme.png" alt="" width="140" height="140">
         <h3>Mieux se connaître</h3>
         <p>Prendre du recul sur ses pensées et repérer les raccourcis qui décident à notre place.</p>
       </article>
       <article class="card">
-        <span class="bubble cat--pensee">${icon('magnifyingGlass')}</span>
+        <img class="illu" src="assets/img/logo.png" alt="" width="140" height="140">
         <h3>Explorer</h3>
         <p>Découvrir les biais qui influencent nos choix, classés par thème, avec un exemple du quotidien.</p>
       </article>
       <article class="card">
-        <span class="bubble cat--decisions">${icon('lightbulb')}</span>
+        <img class="illu" src="assets/img/ampoule.png" alt="" width="140" height="140">
         <h3>Apprendre</h3>
         <p>Des connaissances pour agir au quotidien : comment le cerveau simplifie, et cinq réflexes pour déceler un biais.</p>
       </article>
@@ -213,8 +218,11 @@ function landing() {
         </ul>
       </div>
       <div class="feature-visual">
-        <span class="blob" style="background:var(--teal-soft)"></span>
-        <img src="assets/img/screen-explorer.webp" alt="Écran Explorer de nowYou" width="853" height="1844" loading="lazy">
+        <div class="stage">
+          <span class="blob blob--teal" style="width:58%;aspect-ratio:1;bottom:-20%;left:-24%"></span>
+          <span class="blob blob--coral-soft" style="width:50%;aspect-ratio:1;top:-14%;right:-14%"></span>
+          <img src="assets/img/phone-explorer.webp" alt="Écran Explorer de nowYou" width="640" height="1204" loading="lazy">
+        </div>
       </div>
     </div>
     <div class="feature">
@@ -229,8 +237,11 @@ function landing() {
         </ul>
       </div>
       <div class="feature-visual">
-        <span class="blob" style="background:var(--coral-soft)"></span>
-        <img src="assets/img/screen-parcours.webp" alt="Écran Mon parcours de nowYou" width="853" height="1844" loading="lazy">
+        <div class="stage" style="background:var(--coral-soft)">
+          <span class="blob blob--coral" style="width:58%;aspect-ratio:1;bottom:-20%;right:-24%"></span>
+          <span class="blob blob--teal-soft" style="width:50%;aspect-ratio:1;top:-14%;left:-14%"></span>
+          <img src="assets/img/phone-parcours.webp" alt="Écran Mon parcours de nowYou" width="640" height="1204" loading="lazy">
+        </div>
       </div>
     </div>
   </div>
@@ -282,10 +293,13 @@ function landing() {
 </section>
 
 <section class="cta">
+  <span class="blob blob--teal" style="width:420px;height:420px;bottom:-240px;left:-180px;opacity:.9"></span>
+  <span class="blob blob--coral" style="width:360px;height:360px;bottom:-200px;right:-140px"></span>
+  <span class="blob blob--teal-soft" style="width:260px;height:260px;top:-120px;right:12%"></span>
   <div class="container">
     <h2>Mieux se connaître, <span class="accent">dès aujourd’hui</span>.</h2>
     <p class="muted">Comprendre les biais cognitifs pour faire des choix plus clairs au quotidien.</p>
-    <div class="hero-actions">${storeButtons()}</div>
+    <div class="hero-actions">${actions('')}</div>
   </div>
 </section>
 `;
@@ -306,7 +320,7 @@ function libraryIndex() {
     `<button class="filter filter--all" type="button" data-category="all" aria-pressed="true">Tous</button>`,
     ...ORDER.map(
       (id) =>
-        `<button class="filter filter--${id}" type="button" data-category="${id}" aria-pressed="false">${icon(CATEGORIES[id].icon)}${CATEGORIES[id].label}</button>`,
+        `<button class="filter filter--${id}" type="button" data-category="${id}" aria-pressed="false">${catIcon(id, '../', 24)}${CATEGORIES[id].label}</button>`,
     ),
   ].join('');
 
@@ -314,7 +328,7 @@ function libraryIndex() {
     .map((b) => {
       const search = normalize([b.name, b.theme, b.summary, CATEGORIES[b.category].label, ...(b.altNames || [])].join(' '));
       return `<a class="bias-card" href="${b.id}/" data-category="${b.category}" data-search="${esc(search)}">
-      <div class="top">${bubble(b.category)}${b.featured ? '<span class="chip">Biais courant</span>' : ''}</div>
+      <div class="top">${catIcon(b.category, '../', 48)}${b.featured ? '<span class="chip">Biais courant</span>' : ''}</div>
       <span class="theme cat--${b.category}" style="background:none">${esc(b.theme)}</span>
       <h3>${esc(b.name)}</h3>
       <p>${esc(b.summary)}</p>
@@ -324,7 +338,8 @@ function libraryIndex() {
 
   const body = `
 <section class="page-hero">
-  <span class="blob" style="width:360px;height:360px;top:-160px;right:-120px;background:var(--teal-soft)"></span>
+  <span class="blob blob--teal-soft" style="width:360px;height:360px;top:-160px;right:-120px"></span>
+  <span class="blob blob--coral" style="width:120px;height:120px;top:150px;right:8%;opacity:.9"></span>
   <div class="container">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../">Accueil</a><span>›</span><span>Les biais</span></nav>
     <h1>Explorer <span class="accent">les biais</span></h1>
@@ -363,12 +378,13 @@ function biasPage(bias, index) {
 
   const body = `
 <section class="page-hero">
-  <span class="blob" style="width:360px;height:360px;top:-160px;right:-120px;background:var(--teal-soft)"></span>
-  <span class="blob" style="width:200px;height:200px;top:260px;left:-100px;background:var(--peach)"></span>
+  <span class="blob blob--teal-soft" style="width:360px;height:360px;top:-160px;right:-120px"></span>
+  <span class="blob blob--peach" style="width:200px;height:200px;top:260px;left:-100px"></span>
+  <span class="blob blob--coral" style="width:110px;height:110px;top:120px;right:10%;opacity:.9"></span>
   <div class="container">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../../">Accueil</a><span>›</span><a href="../">Les biais</a><span>›</span><a href="../#categorie=${bias.category}">${cat.label}</a></nav>
     <div class="bias-hero">
-      ${bubble(bias.category)}
+      ${catIcon(bias.category, '../../', 150)}
       <span class="theme cat--${bias.category}" style="background:none">${esc(bias.theme)}</span>
       <h1>${esc(bias.name)}</h1>
       <p class="lead">${esc(bias.summary)}</p>
@@ -392,10 +408,10 @@ function biasPage(bias, index) {
     <div class="card">
       <h3>Testez-vous dans l’app</h3>
       <p>Trois questions sur cette fiche, et le biais rejoint votre parcours. Sans compte, hors ligne.</p>
-      <a class="btn btn--accent" href="../../#telecharger">Découvrir nowYou ${icon('arrowRight')}</a>
+      <a class="btn btn--accent" href="../../">Découvrir nowYou ${icon('arrowRight')}</a>
       <div class="related">
         <h3>Dans la même catégorie</h3>
-        ${related.map((r) => `<a href="../${r.id}/">${bubble(r.category)}${esc(r.name)}${icon('caretRight', 'chev')}</a>`).join('')}
+        ${related.map((r) => `<a href="../${r.id}/">${catIcon(r.category, '../../', 36)}${esc(r.name)}${icon('caretRight', 'chev')}</a>`).join('')}
       </div>
     </div>
   </aside>
@@ -417,7 +433,8 @@ function staticPage({ slug, title, intro, content, description }) {
   const plainTitle = title.replace(/<[^>]+>/g, '');
   const body = `
 <section class="page-hero">
-  <span class="blob" style="width:360px;height:360px;top:-160px;right:-120px;background:var(--teal-soft)"></span>
+  <span class="blob blob--teal-soft" style="width:360px;height:360px;top:-160px;right:-120px"></span>
+  <span class="blob blob--coral" style="width:110px;height:110px;top:140px;right:9%;opacity:.9"></span>
   <div class="container">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../">Accueil</a><span>›</span><span>${esc(plainTitle)}</span></nav>
     <h1>${title}</h1>
