@@ -16,7 +16,7 @@ Les pages sont produites par `scripts/build.js` à partir de `data/biases.json` 
 node scripts/build.js
 ```
 
-- Renseigner `siteUrl` dans `site.config.json` avec l'URL GitHub Pages définitive (canonical, Open Graph, sitemap), puis relancer le build.
+- Le site est publié sur https://ludolamerre.github.io/nowyou/ (`siteUrl` dans `site.config.json`, utilisé pour canonical, Open Graph et sitemap).
 - Après une modification des fiches dans l'app, recopier les quatre JSON fusionnés dans `data/biases.json` et relancer le build.
 - `scripts/extract-icons.js` régénère `scripts/icons.json` depuis les icônes Phosphor du dépôt de l'app (déjà commité, à relancer seulement pour ajouter une icône).
 
