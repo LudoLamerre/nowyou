@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://USER.github.io/nowYou-site/sitemap.xml
