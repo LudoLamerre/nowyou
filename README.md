@@ -5,12 +5,12 @@ Site statique de l'application nowYou, hébergé sur GitHub Pages. Tout est en H
 ## Pages
 
 - `index.html` : landing (fonctionnalités, captures, bibliothèque, confidentialité). Pas de liens vers les stores pour l'instant.
-- `biais/` : les 70 biais avec recherche et filtres par catégorie ; une page par biais dans `biais/<id>/`.
+- Les fiches de biais ne sont pas publiées sur le site (réservées à l'app) ; `data/biases.json` sert seulement aux compteurs et aux noms des biais vedettes de la landing.
 - `support/`, `confidentialite/`, `cgu/`, `mentions-legales/`, `404.html`.
 
 ## Mettre à jour
 
-Les pages sont produites par `scripts/build.js` à partir de `data/biases.json` (copie des données de l'app) et de `site.config.json` (URL du site, e-mail, liens des stores).
+Les pages sont produites par `scripts/build.js` à partir de `data/biases.json` (copie des données de l'app) et de `site.config.json` (URL du site, e-mail).
 
 ```bash
 node scripts/build.js

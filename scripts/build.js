@@ -20,14 +20,6 @@ const icon = (name, cls = '') => {
   return `<svg class="icon ${cls}" viewBox="0 0 256 256" aria-hidden="true">${icons[name]}</svg>`;
 };
 
-const normalize = (value) =>
-  value
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/ /g, ' ')
-    .toLowerCase()
-    .trim();
-
 const write = (relative, html) => {
   const file = path.join(ROOT, relative);
   fs.mkdirSync(path.dirname(file), { recursive: true });
@@ -42,12 +34,6 @@ const CATEGORIES = {
 };
 const ORDER = ['pensee', 'emotions', 'social', 'decisions'];
 
-const sorted = [...biases].sort((a, b) => {
-  const cat = ORDER.indexOf(a.category) - ORDER.indexOf(b.category);
-  if (cat !== 0) return cat;
-  if (a.featured !== b.featured) return a.featured ? -1 : 1;
-  return a.name.localeCompare(b.name, 'fr');
-});
 const featured = biases.filter((b) => b.featured).sort((a, b) => a.featuredOrder - b.featuredOrder);
 const totalQuestions = biases.reduce((sum, b) => sum + b.questions.length, 0);
 
@@ -56,15 +42,15 @@ const catIcon = (category, rel, size) =>
 
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
-const actions = (rel, withHow = false) =>
-  `<a class="btn btn--accent" href="${rel}biais/">Explorer les biais ${icon('arrowRight')}</a>` +
-  (withHow ? `<a class="btn btn--outline" href="${rel}#comment">Comment ça marche</a>` : '');
+const actions = (rel) =>
+  `<a class="btn btn--accent" href="${rel}#app">Découvrir l’app ${icon('arrowRight')}</a>` +
+  `<a class="btn btn--outline" href="${rel}#comment">Comment ça marche</a>`;
+const availability = `<p class="availability">${icon('deviceMobile')} Bientôt disponible sur iOS et Android.</p>`;
 
 function layout({ title, description, depth, body, active = '', scripts = [], pathname = '' }) {
   const rel = '../'.repeat(depth);
   const nav = [
     ['', 'Accueil', 'home'],
-    ['biais/', 'Les biais', 'biais'],
     ['support/', 'Support', 'support'],
   ]
     .map(
@@ -103,7 +89,7 @@ function layout({ title, description, depth, body, active = '', scripts = [], pa
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
       ${nav}
-      <li><a class="btn btn--accent" href="${rel}biais/">Explorer les biais</a></li>
+      <li><a class="btn btn--accent" href="${rel}#app">Découvrir l’app</a></li>
     </ul>
   </div>
 </header>
@@ -114,7 +100,6 @@ ${body}
   <div class="container">
     <p>© ${config.year} ${esc(config.appName)} · ${esc(config.creator)}</p>
     <ul>
-      <li><a href="${rel}biais/">Les biais</a></li>
       <li><a href="${rel}support/">Support</a></li>
       <li><a href="${rel}confidentialite/">Confidentialité</a></li>
       <li><a href="${rel}cgu/">CGU</a></li>
@@ -134,17 +119,15 @@ ${scripts.map((s) => `<script src="${rel}${s}?v=${STAMP}" defer></script>`).join
 function landing() {
   const categoryCards = ORDER.map((id) => {
     const count = biases.filter((b) => b.category === id).length;
-    return `<a class="cat-card cat--${id}" href="biais/#categorie=${id}">
+    return `<div class="cat-card cat--${id}">
       ${catIcon(id, '', 72)}
       <strong>${CATEGORIES[id].label}</strong>
       <span>${esc(CATEGORIES[id].tagline)}</span>
       <span class="count">${count} biais</span>
-    </a>`;
+    </div>`;
   }).join('');
 
-  const featuredChips = featured
-    .map((b) => `<a class="chip" href="biais/${b.id}/">${esc(b.name)}</a>`)
-    .join('');
+  const featuredChips = featured.map((b) => `<span class="chip">${esc(b.name)}</span>`).join('');
 
   const body = `
 <section class="hero">
@@ -157,7 +140,8 @@ function landing() {
       <h1>Des biais<br>à la <span class="accent">clarté</span>.</h1>
       <div class="dash"></div>
       <p class="lead">nowYou vous aide à identifier et comprendre les biais cognitifs pour mieux vous connaître et faire des choix plus éclairés au quotidien.</p>
-      <div class="hero-actions">${actions('', true)}</div>
+      <div class="hero-actions">${actions('')}</div>
+      ${availability}
     </div>
     <div class="hero-visual">
       <div class="stage">
@@ -264,8 +248,8 @@ function landing() {
 <section class="section" id="bibliotheque">
   <div class="container">
     <div class="section-head">
-      <h2>La bibliothèque des biais</h2>
-      <p>Toutes les fiches de l’application sont aussi lisibles ici, gratuitement.</p>
+      <h2>${biases.length} biais, quatre catégories</h2>
+      <p>Toutes les fiches se lisent dans l’application, hors ligne, avec leur quiz.</p>
     </div>
     <div class="grid-4">${categoryCards}</div>
     <h3 style="margin-top:40px">Les plus courants</h3>
@@ -300,6 +284,7 @@ function landing() {
     <h2>Mieux se connaître, <span class="accent">dès aujourd’hui</span>.</h2>
     <p class="muted">Comprendre les biais cognitifs pour faire des choix plus clairs au quotidien.</p>
     <div class="hero-actions">${actions('')}</div>
+    ${availability}
   </div>
 </section>
 `;
@@ -310,120 +295,6 @@ function landing() {
     active: 'home',
     body,
     pathname: '',
-  });
-}
-
-// ─── Library ─────────────────────────────────────────────────────────────────
-
-function libraryIndex() {
-  const filters = [
-    `<button class="filter filter--all" type="button" data-category="all" aria-pressed="true">Tous</button>`,
-    ...ORDER.map(
-      (id) =>
-        `<button class="filter filter--${id}" type="button" data-category="${id}" aria-pressed="false">${catIcon(id, '../', 24)}${CATEGORIES[id].label}</button>`,
-    ),
-  ].join('');
-
-  const cards = sorted
-    .map((b) => {
-      const search = normalize([b.name, b.theme, b.summary, CATEGORIES[b.category].label, ...(b.altNames || [])].join(' '));
-      return `<a class="bias-card" href="${b.id}/" data-category="${b.category}" data-search="${esc(search)}">
-      <div class="top">${catIcon(b.category, '../', 48)}${b.featured ? '<span class="chip">Biais courant</span>' : ''}</div>
-      <span class="theme cat--${b.category}" style="background:none">${esc(b.theme)}</span>
-      <h3>${esc(b.name)}</h3>
-      <p>${esc(b.summary)}</p>
-    </a>`;
-    })
-    .join('');
-
-  const body = `
-<section class="page-hero">
-  <span class="blob blob--teal-soft" style="width:360px;height:360px;top:-160px;right:-120px"></span>
-  <span class="blob blob--coral" style="width:120px;height:120px;top:150px;right:8%;opacity:.9"></span>
-  <div class="container">
-    <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../">Accueil</a><span>›</span><span>Les biais</span></nav>
-    <h1>Explorer <span class="accent">les biais</span></h1>
-    <div class="dash"></div>
-    <p class="lead muted" style="max-width:36rem">Les ${biases.length} fiches de l’application. Recherchez un biais, un synonyme ou un thème, ou filtrez par catégorie.</p>
-  </div>
-  <div class="container toolbar">
-    <label class="search"><span class="visually-hidden">Rechercher</span>${icon('magnifyingGlass')}<input id="search" type="search" placeholder="Rechercher un biais ou un thème" autocomplete="off"></label>
-    <div class="filters">${filters}</div>
-    <p class="count" id="count">${biases.length} biais</p>
-  </div>
-</section>
-<section class="container">
-  <div class="bias-grid">
-    ${cards}
-    <p class="empty" id="empty" hidden>Aucun biais ne correspond. Essayez un autre mot, ou retirez un filtre.</p>
-  </div>
-</section>
-`;
-  return layout({
-    title: 'Les biais cognitifs',
-    description: `Les ${biases.length} biais cognitifs expliqués dans nowYou : définition, exemple du quotidien, signaux pour les repérer et parade.`,
-    depth: 1,
-    active: 'biais',
-    body,
-    scripts: ['assets/js/biais.js'],
-    pathname: 'biais/',
-  });
-}
-
-function biasPage(bias, index) {
-  const cat = CATEGORIES[bias.category];
-  const prev = sorted[index - 1];
-  const next = sorted[index + 1];
-  const related = sorted.filter((b) => b.category === bias.category && b.id !== bias.id).slice(0, 4);
-
-  const body = `
-<section class="page-hero">
-  <span class="blob blob--teal-soft" style="width:360px;height:360px;top:-160px;right:-120px"></span>
-  <span class="blob blob--peach" style="width:200px;height:200px;top:260px;left:-100px"></span>
-  <span class="blob blob--coral" style="width:110px;height:110px;top:120px;right:10%;opacity:.9"></span>
-  <div class="container">
-    <nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="../../">Accueil</a><span>›</span><a href="../">Les biais</a><span>›</span><a href="../#categorie=${bias.category}">${cat.label}</a></nav>
-    <div class="bias-hero">
-      ${catIcon(bias.category, '../../', 150)}
-      <span class="theme cat--${bias.category}" style="background:none">${esc(bias.theme)}</span>
-      <h1>${esc(bias.name)}</h1>
-      <p class="lead">${esc(bias.summary)}</p>
-      ${bias.featured ? '<span class="chip">Biais courant</span>' : ''}
-    </div>
-  </div>
-</section>
-<section class="container bias-body">
-  <div>
-    <article class="card"><h2>En bref</h2><p>${esc(bias.definition)}</p></article>
-    <article class="card card--tint cat--${bias.category}" style="color:var(--ink)"><h2>${icon('quotes')}Au quotidien</h2><p>${esc(bias.example)}</p></article>
-    <article class="card"><h2>${icon('eye')}Comment le repérer</h2><ul class="spot">${bias.howToSpot.map((s) => `<li>${esc(s)}</li>`).join('')}</ul></article>
-    <article class="card card--night"><h2>${icon('lightbulb')}La parade</h2><p>${esc(bias.tip)}</p></article>
-    ${bias.origin ? `<p class="origin">${esc(bias.origin)}</p>` : ''}
-    <div class="pager">
-      ${prev ? `<a href="../${prev.id}/"><span>Précédent</span>${esc(prev.name)}</a>` : '<span></span>'}
-      ${next ? `<a class="next" href="../${next.id}/"><span>Suivant</span>${esc(next.name)}</a>` : ''}
-    </div>
-  </div>
-  <aside class="aside">
-    <div class="card">
-      <h3>Testez-vous dans l’app</h3>
-      <p>Trois questions sur cette fiche, et le biais rejoint votre parcours. Sans compte, hors ligne.</p>
-      <a class="btn btn--accent" href="../../">Découvrir nowYou ${icon('arrowRight')}</a>
-      <div class="related">
-        <h3>Dans la même catégorie</h3>
-        ${related.map((r) => `<a href="../${r.id}/">${catIcon(r.category, '../../', 36)}${esc(r.name)}${icon('caretRight', 'chev')}</a>`).join('')}
-      </div>
-    </div>
-  </aside>
-</section>
-`;
-  return layout({
-    title: bias.name,
-    description: bias.summary,
-    depth: 2,
-    active: 'biais',
-    body,
-    pathname: `biais/${bias.id}/`,
   });
 }
 
@@ -590,7 +461,7 @@ const notFoundPage = () =>
   <span class="sparkles"></span>
   <h1>Page <span class="accent">introuvable</span></h1>
   <p class="muted">Un raccourci de trop. Retournons sur le bon chemin.</p>
-  <p><a class="btn btn--primary" href="./">Retour à l’accueil</a> <a class="btn btn--outline" href="biais/">Voir les biais</a></p>
+  <p><a class="btn btn--primary" href="./">Retour à l’accueil</a></p>
 </div></section>`,
     pathname: '404.html',
   });
@@ -600,12 +471,6 @@ const notFoundPage = () =>
 const pages = [];
 write('index.html', landing());
 pages.push('');
-write('biais/index.html', libraryIndex());
-pages.push('biais/');
-sorted.forEach((bias, index) => {
-  write(`biais/${bias.id}/index.html`, biasPage(bias, index));
-  pages.push(`biais/${bias.id}/`);
-});
 for (const [slug, page] of [
   ['support', supportPage],
   ['confidentialite', privacyPage],

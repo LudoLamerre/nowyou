@@ -473,6 +473,20 @@ p {
   justify-content: center;
 }
 
+.availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-weight: 600;
+  color: var(--slate);
+}
+
+.availability .icon {
+  color: var(--teal);
+  font-size: 1.3rem;
+}
+
 .hero-visual .stage {
   background: var(--peach);
 }
@@ -648,9 +662,6 @@ p {
   transition: transform 0.15s;
 }
 
-.cat-card:hover {
-  transform: translateY(-3px);
-}
 
 .cat-card .cat-icon {
   width: 72px;
@@ -693,17 +704,12 @@ p {
   gap: 10px;
 }
 
-.chips a.chip {
+.chips .chip {
   background: var(--white);
   color: var(--night);
   box-shadow: var(--shadow-card);
   font-size: 0.9rem;
   padding: 9px 16px;
-  transition: transform 0.15s;
-}
-
-.chips a.chip:hover {
-  transform: translateY(-2px);
 }
 
 .privacy {
@@ -1308,9 +1314,7 @@ p {
   }
 
   .btn,
-  .cat-card,
-  .bias-card,
-  .chips a.chip {
+  .cat-card {
     transition: none;
   }
 }

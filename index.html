@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css?v=mvflo23s">
+<link rel="stylesheet" href="assets/css/style.css?v=mvflrba4">
 </head>
 <body>
 <a class="visually-hidden" href="#main">Aller au contenu</a>
@@ -27,8 +27,8 @@
     <a class="brand" href="./" aria-label="nowYou, accueil"><img src="assets/img/logo-horizontal.png" alt="nowYou" width="111" height="36"></a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span></button>
     <ul class="nav-links" id="nav-links">
-      <li><a href="./" aria-current="page">Accueil</a></li><li><a href="biais/">Les biais</a></li><li><a href="support/">Support</a></li>
-      <li><a class="btn btn--accent" href="biais/">Explorer les biais</a></li>
+      <li><a href="./" aria-current="page">Accueil</a></li><li><a href="support/">Support</a></li>
+      <li><a class="btn btn--accent" href="#app">Découvrir l’app</a></li>
     </ul>
   </div>
 </header>
@@ -44,7 +44,8 @@
       <h1>Des biais<br>à la <span class="accent">clarté</span>.</h1>
       <div class="dash"></div>
       <p class="lead">nowYou vous aide à identifier et comprendre les biais cognitifs pour mieux vous connaître et faire des choix plus éclairés au quotidien.</p>
-      <div class="hero-actions"><a class="btn btn--accent" href="biais/">Explorer les biais <svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="m216 128-72 72V56Z" opacity=".2"/><path d="m221.66 122.34-72-72A8 8 0 0 0 136 56v64H40a8 8 0 0 0 0 16h96v64a8 8 0 0 0 13.66 5.66l72-72a8 8 0 0 0 0-11.32M152 180.69V75.31L204.69 128Z"/></svg></a><a class="btn btn--outline" href="#comment">Comment ça marche</a></div>
+      <div class="hero-actions"><a class="btn btn--accent" href="#app">Découvrir l’app <svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="m216 128-72 72V56Z" opacity=".2"/><path d="m221.66 122.34-72-72A8 8 0 0 0 136 56v64H40a8 8 0 0 0 0 16h96v64a8 8 0 0 0 13.66 5.66l72-72a8 8 0 0 0 0-11.32M152 180.69V75.31L204.69 128Z"/></svg></a><a class="btn btn--outline" href="#comment">Comment ça marche</a></div>
+      <p class="availability"><svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="M192 56v144H64V56Z" opacity=".2"/><path d="M176 16H80a24 24 0 0 0-24 24v176a24 24 0 0 0 24 24h96a24 24 0 0 0 24-24V40a24 24 0 0 0-24-24M72 64h112v128H72Zm8-32h96a8 8 0 0 1 8 8v8H72v-8a8 8 0 0 1 8-8m96 192H80a8 8 0 0 1-8-8v-8h112v8a8 8 0 0 1-8 8"/></svg> Bientôt disponible sur iOS et Android.</p>
     </div>
     <div class="hero-visual">
       <div class="stage">
@@ -151,32 +152,32 @@
 <section class="section" id="bibliotheque">
   <div class="container">
     <div class="section-head">
-      <h2>La bibliothèque des biais</h2>
-      <p>Toutes les fiches de l’application sont aussi lisibles ici, gratuitement.</p>
+      <h2>70 biais, quatre catégories</h2>
+      <p>Toutes les fiches se lisent dans l’application, hors ligne, avec leur quiz.</p>
     </div>
-    <div class="grid-4"><a class="cat-card cat--pensee" href="biais/#categorie=pensee">
+    <div class="grid-4"><div class="cat-card cat--pensee">
       <img class="cat-icon" src="assets/img/cat-pensee.png" alt="" width="72" height="72" loading="lazy">
       <strong>Pensée</strong>
       <span>Raisonnement, mémoire, attention</span>
       <span class="count">18 biais</span>
-    </a><a class="cat-card cat--emotions" href="biais/#categorie=emotions">
+    </div><div class="cat-card cat--emotions">
       <img class="cat-icon" src="assets/img/cat-emotions.png" alt="" width="72" height="72" loading="lazy">
       <strong>Émotions</strong>
       <span>Ressenti, humeur, anticipation</span>
       <span class="count">16 biais</span>
-    </a><a class="cat-card cat--social" href="biais/#categorie=social">
+    </div><div class="cat-card cat--social">
       <img class="cat-icon" src="assets/img/cat-social.png" alt="" width="72" height="72" loading="lazy">
       <strong>Social</strong>
       <span>Les autres, le groupe, l’image de soi</span>
       <span class="count">18 biais</span>
-    </a><a class="cat-card cat--decisions" href="biais/#categorie=decisions">
+    </div><div class="cat-card cat--decisions">
       <img class="cat-icon" src="assets/img/cat-decisions.png" alt="" width="72" height="72" loading="lazy">
       <strong>Décisions</strong>
       <span>Choix, argent, risque</span>
       <span class="count">18 biais</span>
-    </a></div>
+    </div></div>
     <h3 style="margin-top:40px">Les plus courants</h3>
-    <div class="chips"><a class="chip" href="biais/biais-de-confirmation/">Biais de confirmation</a><a class="chip" href="biais/effet-d-ancrage/">Effet d'ancrage</a><a class="chip" href="biais/biais-de-disponibilite/">Biais de disponibilité</a><a class="chip" href="biais/effet-de-halo/">Effet de halo</a><a class="chip" href="biais/biais-de-negativite/">Biais de négativité</a><a class="chip" href="biais/biais-du-statu-quo/">Biais du statu quo</a><a class="chip" href="biais/cout-irrecuperable/">Coût irrécupérable</a><a class="chip" href="biais/effet-de-cadrage/">Effet de cadrage</a><a class="chip" href="biais/aversion-a-la-perte/">Aversion à la perte</a><a class="chip" href="biais/erreur-fondamentale-d-attribution/">Erreur fondamentale d'attribution</a><a class="chip" href="biais/biais-du-survivant/">Biais du survivant</a><a class="chip" href="biais/effet-dunning-kruger/">Effet Dunning-Kruger</a></div>
+    <div class="chips"><span class="chip">Biais de confirmation</span><span class="chip">Effet d'ancrage</span><span class="chip">Biais de disponibilité</span><span class="chip">Effet de halo</span><span class="chip">Biais de négativité</span><span class="chip">Biais du statu quo</span><span class="chip">Coût irrécupérable</span><span class="chip">Effet de cadrage</span><span class="chip">Aversion à la perte</span><span class="chip">Erreur fondamentale d'attribution</span><span class="chip">Biais du survivant</span><span class="chip">Effet Dunning-Kruger</span></div>
   </div>
 </section>
 
@@ -206,7 +207,8 @@
   <div class="container">
     <h2>Mieux se connaître, <span class="accent">dès aujourd’hui</span>.</h2>
     <p class="muted">Comprendre les biais cognitifs pour faire des choix plus clairs au quotidien.</p>
-    <div class="hero-actions"><a class="btn btn--accent" href="biais/">Explorer les biais <svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="m216 128-72 72V56Z" opacity=".2"/><path d="m221.66 122.34-72-72A8 8 0 0 0 136 56v64H40a8 8 0 0 0 0 16h96v64a8 8 0 0 0 13.66 5.66l72-72a8 8 0 0 0 0-11.32M152 180.69V75.31L204.69 128Z"/></svg></a></div>
+    <div class="hero-actions"><a class="btn btn--accent" href="#app">Découvrir l’app <svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="m216 128-72 72V56Z" opacity=".2"/><path d="m221.66 122.34-72-72A8 8 0 0 0 136 56v64H40a8 8 0 0 0 0 16h96v64a8 8 0 0 0 13.66 5.66l72-72a8 8 0 0 0 0-11.32M152 180.69V75.31L204.69 128Z"/></svg></a><a class="btn btn--outline" href="#comment">Comment ça marche</a></div>
+    <p class="availability"><svg class="icon " viewBox="0 0 256 256" aria-hidden="true"><path d="M192 56v144H64V56Z" opacity=".2"/><path d="M176 16H80a24 24 0 0 0-24 24v176a24 24 0 0 0 24 24h96a24 24 0 0 0 24-24V40a24 24 0 0 0-24-24M72 64h112v128H72Zm8-32h96a8 8 0 0 1 8 8v8H72v-8a8 8 0 0 1 8-8m96 192H80a8 8 0 0 1-8-8v-8h112v8a8 8 0 0 1-8 8"/></svg> Bientôt disponible sur iOS et Android.</p>
   </div>
 </section>
 
@@ -215,7 +217,6 @@
   <div class="container">
     <p>© 2026 nowYou · Ludovic Lamerre</p>
     <ul>
-      <li><a href="biais/">Les biais</a></li>
       <li><a href="support/">Support</a></li>
       <li><a href="confidentialite/">Confidentialité</a></li>
       <li><a href="cgu/">CGU</a></li>
@@ -223,7 +224,7 @@
     </ul>
   </div>
 </footer>
-<script src="assets/js/main.js?v=mvflo23s" defer></script>
+<script src="assets/js/main.js?v=mvflrba4" defer></script>
 
 </body>
 </html>
